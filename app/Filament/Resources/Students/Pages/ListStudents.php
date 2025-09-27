@@ -23,15 +23,4 @@ class ListStudents extends ListRecords
                 ->icon(Heroicon::OutlinedPlus),
         ];
     }
-
-    public function table(Table $table): Table
-    {
-        return $table
-            ->recordActions(ActionGroup::make([
-                ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
-                ])
-            );
-    }
 }

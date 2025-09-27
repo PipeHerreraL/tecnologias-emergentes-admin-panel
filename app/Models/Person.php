@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Student extends Person
+abstract class Person extends Model
 {
-    /** @use HasFactory<\Database\Factories\StudentFactory> */
     use HasFactory;
 
     /**
@@ -15,5 +14,11 @@ class Student extends Person
      *
      * @var list<string>
      */
-    protected $table = 'students';
+    protected $fillable = [
+        'document',
+        'name',
+        'last_name',
+        'address',
+        'age'
+    ];
 }
