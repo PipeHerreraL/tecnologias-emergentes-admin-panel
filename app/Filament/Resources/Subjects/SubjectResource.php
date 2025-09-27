@@ -22,7 +22,21 @@ class SubjectResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
 
+    protected static string|null|BackedEnum $activeNavigationIcon = Heroicon::BookOpen;
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'The number of subjects';
+    }
+
     protected static ?string $recordTitleAttribute = 'Subject';
+
+    protected static string|null|\UnitEnum $navigationGroup = 'Subjects';
 
     public static function form(Schema $schema): Schema
     {

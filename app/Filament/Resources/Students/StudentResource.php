@@ -22,7 +22,11 @@ class StudentResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
+    protected static string|null|BackedEnum $activeNavigationIcon = Heroicon::UserGroup;
+
     protected static ?string $recordTitleAttribute = 'Student';
+
+    protected static string|null|\UnitEnum $navigationGroup = 'People';
 
     public static function form(Schema $schema): Schema
     {

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Subjects\Pages;
 use App\Filament\Resources\Subjects\SubjectResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Icons\Heroicon;
 
 class ListSubjects extends ListRecords
 {
@@ -13,7 +14,8 @@ class ListSubjects extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->icon(Heroicon::OutlinedPlus),
         ];
     }
 }
