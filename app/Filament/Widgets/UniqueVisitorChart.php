@@ -9,6 +9,7 @@ use Illuminate\Support\Arr;
 class UniqueVisitorChart extends ChartWidget
 {
     protected ?string $heading = 'Unique Visitor Chart';
+
     protected static ?int $sort = 1;
 
     public ?string $filter = 'week';
@@ -16,8 +17,8 @@ class UniqueVisitorChart extends ChartWidget
     protected function getFilters(): ?array
     {
         return [
-            'week' => 'Semana',
-            'month' => 'Mes',
+            'week' => 'Week',
+            'month' => 'Month',
         ];
     }
 

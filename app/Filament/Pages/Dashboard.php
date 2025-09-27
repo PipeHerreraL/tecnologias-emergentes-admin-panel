@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Widgets\IncomeOverviewChart;
 use App\Filament\Widgets\StatsOverview;
 use App\Filament\Widgets\UniqueVisitorChart;
 use BackedEnum;
@@ -19,6 +20,7 @@ class Dashboard extends BaseDashboard
         return [
             StatsOverview::class,
             UniqueVisitorChart::class,
+            IncomeOverviewChart::class,
         ];
     }
 }
