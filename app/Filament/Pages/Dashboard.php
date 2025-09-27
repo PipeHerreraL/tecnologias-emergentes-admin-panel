@@ -11,9 +11,9 @@ use Filament\Support\Icons\Heroicon;
 
 class Dashboard extends BaseDashboard
 {
-    protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedHome;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHome;
 
-    protected static string | BackedEnum | null $activeNavigationIcon = Heroicon::Home;
+    protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Home;
 
     public function getWidgets(): array
     {

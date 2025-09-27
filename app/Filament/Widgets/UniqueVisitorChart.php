@@ -109,6 +109,7 @@ class UniqueVisitorChart extends ChartWidget
     protected function getColors(): array
     {
         $primary = '54, 162, 235';
+
         return [
             'Page Views' => [
                 'background' => "rgba({$primary}, 0.2)",

@@ -43,7 +43,7 @@ class IncomeOverviewChart extends ChartWidget
                     'color' => '#000',
                     'font' => [
                         'weight' => 'normal',
-                    ]
+                    ],
                 ],
                 'subtitle' => [
                     'display' => true,

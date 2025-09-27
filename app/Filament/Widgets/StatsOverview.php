@@ -2,10 +2,8 @@
 
 namespace App\Filament\Widgets;
 
-use Filament\Support\RawJs;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Livewire\Attributes\Title;
 
 class StatsOverview extends StatsOverviewWidget
 {

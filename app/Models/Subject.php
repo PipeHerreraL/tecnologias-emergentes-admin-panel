@@ -13,6 +13,6 @@ class Subject extends Model
     protected $fillable = [
         'name',
         'code',
-        'credits'
+        'credits',
     ];
 }

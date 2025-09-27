@@ -19,6 +19,6 @@ abstract class Person extends Model
         'name',
         'last_name',
         'address',
-        'age'
+        'age',
     ];
 }
