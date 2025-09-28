@@ -26,10 +26,44 @@ class SubjectController extends Controller
         return JsonResource::make($subjects);
     }
 
+    public function store(Request $request): JsonResource
+    {
+        $data = $request->validate([
+            'name' => ['required','string','max:255'],
+            'code' => ['nullable','string','max:255'],
+            'credits' => ['nullable','integer','min:0'],
+        ]);
+
+        $subject = Subject::create($data);
+
+        return JsonResource::make($subject);
+    }
+
     public function show(Subject $subject): JsonResource
     {
         $subject->load(['students', 'teacher']);
 
         return JsonResource::make($subject);
+    }
+
+    public function update(Request $request, Subject $subject): JsonResource
+    {
+        $data = $request->validate([
+            'name' => ['sometimes','required','string','max:255'],
+            'code' => ['sometimes','nullable','string','max:255'],
+            'credits' => ['sometimes','nullable','integer','min:0'],
+        ]);
+
+        $subject->update($data);
+        $subject->refresh();
+
+        return JsonResource::make($subject);
+    }
+
+    public function destroy(Subject $subject): JsonResource
+    {
+        $subject->delete();
+
+        return JsonResource::make(['deleted' => true]);
     }
 }

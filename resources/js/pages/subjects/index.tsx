@@ -41,7 +41,7 @@ export default function SubjectsIndex() {
       return typeof v === 'object' && v !== null && 'data' in (v as Record<string, unknown>);
     };
 
-    fetch(`/api/subjects?${query}`, { credentials: 'same-origin' })
+    fetch(`/admin/subjects.json?${query}`, { credentials: 'same-origin' })
       .then(async (r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const json: unknown = await r.json();
@@ -73,6 +73,32 @@ export default function SubjectsIndex() {
             placeholder="Search by name or code..."
             className="w-full max-w-sm rounded-md border border-sidebar-border/70 bg-transparent px-3 py-2 text-sm outline-none focus:border-foreground/40 dark:border-sidebar-border"
           />
+          <button
+            className="rounded-md border border-sidebar-border/70 px-3 py-2 text-sm dark:border-sidebar-border"
+            onClick={async () => {
+              const name = prompt('Name');
+              if (!name) return;
+              const code = prompt('Code') ?? '';
+              const creditsStr = prompt('Credits (number)') ?? '';
+              const credits = creditsStr ? Number(creditsStr) : undefined;
+              const token = (document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]) ?? (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null)?.content ?? '';
+              const res = await fetch('/api/subjects', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'X-CSRF-TOKEN': token,
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({ name, code, credits }),
+              });
+              if (res.ok) {
+                setPage(1);
+              } else {
+                alert('Failed to create subject');
+              }
+            }}
+          >New</button>
         </div>
 
         <div className="relative overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
@@ -84,15 +110,16 @@ export default function SubjectsIndex() {
                   <th className="px-4 py-3 font-medium">Name</th>
                   <th className="px-4 py-3 font-medium">Code</th>
                   <th className="px-4 py-3 font-medium">Credits</th>
+                  <th className="px-4 py-3 font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td className="px-4 py-6" colSpan={4}>Loading...</td></tr>
+                  <tr><td className="px-4 py-6" colSpan={5}>Loading...</td></tr>
                 ) : error ? (
-                  <tr><td className="px-4 py-6 text-red-600" colSpan={4}>Error: {error}</td></tr>
+                  <tr><td className="px-4 py-6 text-red-600" colSpan={5}>Error: {error}</td></tr>
                 ) : items.length === 0 ? (
-                  <tr><td className="px-4 py-6" colSpan={4}>No subjects found.</td></tr>
+                  <tr><td className="px-4 py-6" colSpan={5}>No subjects found.</td></tr>
                 ) : (
                   items.map((s) => (
                     <tr key={s.id} className="border-t border-sidebar-border/50">
@@ -100,6 +127,55 @@ export default function SubjectsIndex() {
                       <td className="px-4 py-3">{s.name}</td>
                       <td className="px-4 py-3">{s.code ?? '—'}</td>
                       <td className="px-4 py-3">{s.credits ?? '—'}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <button
+                            className="rounded border border-sidebar-border/70 px-2 py-1 text-xs dark:border-sidebar-border"
+                            onClick={async () => {
+                              const name = prompt('Name', s.name) ?? s.name;
+                              const code = prompt('Code', s.code ?? '') ?? s.code ?? '';
+                              const creditsStr = prompt('Credits (number)', s.credits?.toString() ?? '') ?? (s.credits?.toString() ?? '');
+                              const credits = creditsStr ? Number(creditsStr) : undefined;
+                              const token = (document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]) ?? (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null)?.content ?? '';
+                              const res = await fetch(`/api/subjects/${s.id}`, {
+                                method: 'PATCH',
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                  'X-Requested-With': 'XMLHttpRequest',
+                                  'X-CSRF-TOKEN': token,
+                                },
+                                credentials: 'same-origin',
+                                body: JSON.stringify({ name, code, credits }),
+                              });
+                              if (!res.ok) {
+                                alert('Failed to update subject');
+                              } else {
+                                setPage((p) => p);
+                              }
+                            }}
+                          >Edit</button>
+                          <button
+                            className="rounded border border-red-400 px-2 py-1 text-xs text-red-600"
+                            onClick={async () => {
+                              if (!confirm('Delete this subject?')) return;
+                              const token = (document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]) ?? (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null)?.content ?? '';
+                              const res = await fetch(`/api/subjects/${s.id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                  'X-Requested-With': 'XMLHttpRequest',
+                                  'X-CSRF-TOKEN': token,
+                                },
+                                credentials: 'same-origin',
+                              });
+                              if (!res.ok) {
+                                alert('Failed to delete subject');
+                              } else {
+                                setPage((p) => Math.max(1, Math.min(p, meta.last_page)));
+                              }
+                            }}
+                          >Delete</button>
+                        </div>
+                      </td>
                     </tr>
                   ))
                 )}

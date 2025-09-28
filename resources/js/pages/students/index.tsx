@@ -44,7 +44,7 @@ export default function StudentsIndex() {
       return typeof v === 'object' && v !== null && 'data' in (v as Record<string, unknown>);
     };
 
-    fetch(`/api/students?${query}`, { credentials: 'same-origin' })
+    fetch(`/admin/students.json?${query}`, { credentials: 'same-origin' })
       .then(async (r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const json: unknown = await r.json();
@@ -76,6 +76,32 @@ export default function StudentsIndex() {
             placeholder="Search by name, document or address..."
             className="w-full max-w-sm rounded-md border border-sidebar-border/70 bg-transparent px-3 py-2 text-sm outline-none focus:border-foreground/40 dark:border-sidebar-border"
           />
+          <button
+            className="rounded-md border border-sidebar-border/70 px-3 py-2 text-sm dark:border-sidebar-border"
+            onClick={async () => {
+              const name = prompt('Name');
+              if (!name) return;
+              const last_name = prompt('Last name') ?? '';
+              const document = prompt('Document') ?? '';
+              const address = prompt('Address') ?? '';
+              const res = await fetch('/api/students', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'X-CSRF-TOKEN': (document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]) ?? (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null)?.content ?? '',
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({ name, last_name, document, address }),
+              });
+              if (res.ok) {
+                // refresh
+                setPage(1);
+              } else {
+                alert('Failed to create student');
+              }
+            }}
+          >New</button>
         </div>
 
         <div className="relative overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
@@ -89,15 +115,16 @@ export default function StudentsIndex() {
                   <th className="px-4 py-3 font-medium">Last name</th>
                   <th className="px-4 py-3 font-medium">Address</th>
                   <th className="px-4 py-3 font-medium">Age</th>
+                  <th className="px-4 py-3 font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td className="px-4 py-6" colSpan={6}>Loading...</td></tr>
+                  <tr><td className="px-4 py-6" colSpan={7}>Loading...</td></tr>
                 ) : error ? (
-                  <tr><td className="px-4 py-6 text-red-600" colSpan={6}>Error: {error}</td></tr>
+                  <tr><td className="px-4 py-6 text-red-600" colSpan={7}>Error: {error}</td></tr>
                 ) : items.length === 0 ? (
-                  <tr><td className="px-4 py-6" colSpan={6}>No students found.</td></tr>
+                  <tr><td className="px-4 py-6" colSpan={7}>No students found.</td></tr>
                 ) : (
                   items.map((s) => (
                     <tr key={s.id} className="border-t border-sidebar-border/50">
@@ -107,6 +134,57 @@ export default function StudentsIndex() {
                       <td className="px-4 py-3">{s.last_name}</td>
                       <td className="px-4 py-3">{s.address ?? '—'}</td>
                       <td className="px-4 py-3">{s.age ?? '—'}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <button
+                            className="rounded border border-sidebar-border/70 px-2 py-1 text-xs dark:border-sidebar-border"
+                            onClick={async () => {
+                              const name = prompt('Name', s.name) ?? s.name;
+                              const last_name = prompt('Last name', s.last_name) ?? s.last_name;
+                              const documentVal = prompt('Document', s.document ?? '') ?? s.document ?? '';
+                              const addressVal = prompt('Address', s.address ?? '') ?? s.address ?? '';
+                              const token = (document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]) ?? (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null)?.content ?? '';
+                              const res = await fetch(`/api/students/${s.id}`, {
+                                method: 'PATCH',
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                  'X-Requested-With': 'XMLHttpRequest',
+                                  'X-CSRF-TOKEN': token,
+                                },
+                                credentials: 'same-origin',
+                                body: JSON.stringify({ name, last_name, document: documentVal, address: addressVal }),
+                              });
+                              if (!res.ok) {
+                                alert('Failed to update student');
+                              } else {
+                                // re-fetch by triggering state change
+                                setPage((p) => p);
+                              }
+                            }}
+                          >Edit</button>
+                          <button
+                            className="rounded border border-red-400 px-2 py-1 text-xs text-red-600"
+                            onClick={async () => {
+                              if (!confirm('Delete this student?')) return;
+                              const token = (document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]) ?? (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null)?.content ?? '';
+                              const res = await fetch(`/api/students/${s.id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                  'X-Requested-With': 'XMLHttpRequest',
+                                  'X-CSRF-TOKEN': token,
+                                },
+                                credentials: 'same-origin',
+                              });
+                              if (!res.ok) {
+                                alert('Failed to delete student');
+                              } else {
+                                // If on last item of last page, go back one page
+                                setPage((p) => Math.max(1, Math.min(p, meta.last_page)));
+                              }
+                            }}
+                          >Delete</button>
+                        </div>
+                      </td>
                     </tr>
                   ))
                 )}
