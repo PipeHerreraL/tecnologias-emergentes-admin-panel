@@ -39,7 +39,7 @@ return new class extends Migration
                 'phone',
                 'gender',
                 'document_type',
-                'birth_date'
+                'birth_date',
             ]);
         });
 
@@ -49,7 +49,7 @@ return new class extends Migration
                 'phone',
                 'gender',
                 'document_type',
-                'birth_date'
+                'birth_date',
             ]);
         });
     }

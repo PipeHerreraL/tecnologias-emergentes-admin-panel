@@ -39,14 +39,13 @@ abstract class Person extends Model
     /**
      * Accessor to get the current age based on birth_date.
      * This field is calculated and NOT stored in the database.
-     *
-     * @return int|null
      */
     public function getAgeAttribute(): ?int
     {
         if (is_null($this->birth_date)) {
             return null;
         }
+
         return $this->birth_date->diffInYears(Carbon::now());
     }
 }
