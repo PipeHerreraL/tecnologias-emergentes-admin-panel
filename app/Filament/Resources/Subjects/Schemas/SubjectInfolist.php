@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Subjects\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class SubjectInfolist
@@ -11,15 +12,20 @@ class SubjectInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('created_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('updated_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('name'),
-                TextEntry::make('code'),
-                TextEntry::make('credits'),
+                Section::make('Basic Details')
+                    ->schema([
+                        TextEntry::make('name'),
+                        TextEntry::make('code'),
+                        TextEntry::make('credits'),
+                    ])->columns(3),
+                Section::make('Teacher')
+                    ->schema([
+                        TextEntry::make('teacher.name')
+                            ->label('Teacher')
+                            ->formatStateUsing(fn ($state, $record) => $record->teacher
+                                ? $record->teacher->name.' '.$record->teacher->last_name
+                                : 'N/A'),
+                    ]),
             ]);
     }
 }
