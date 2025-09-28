@@ -37,6 +37,15 @@ abstract class Person extends Model
     ];
 
     /**
+     * The attributes that should be appended to the model's array / JSON form.
+     *
+     * @var list<string>
+     */
+    protected $appends = [
+        'age',
+    ];
+
+    /**
      * Accessor to get the current age based on birth_date.
      * This field is calculated and NOT stored in the database.
      */

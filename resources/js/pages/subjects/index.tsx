@@ -7,8 +7,7 @@ interface Subject {
   id: number;
   name: string;
   code?: string | null;
-  students_count?: number;
-  teacher_id?: number | null;
+  credits?: number | null;
 }
 
 interface Paginated<T> {
@@ -84,7 +83,7 @@ export default function SubjectsIndex() {
                   <th className="px-4 py-3 font-medium">ID</th>
                   <th className="px-4 py-3 font-medium">Name</th>
                   <th className="px-4 py-3 font-medium">Code</th>
-                  <th className="px-4 py-3 font-medium">Students</th>
+                  <th className="px-4 py-3 font-medium">Credits</th>
                 </tr>
               </thead>
               <tbody>
@@ -100,7 +99,7 @@ export default function SubjectsIndex() {
                       <td className="px-4 py-3">{s.id}</td>
                       <td className="px-4 py-3">{s.name}</td>
                       <td className="px-4 py-3">{s.code ?? '—'}</td>
-                      <td className="px-4 py-3">{s.students_count ?? 0}</td>
+                      <td className="px-4 py-3">{s.credits ?? '—'}</td>
                     </tr>
                   ))
                 )}

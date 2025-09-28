@@ -5,10 +5,11 @@ import { type BreadcrumbItem } from '@/types';
 
 interface Teacher {
   id: number;
-  first_name: string;
+  document?: string | null;
+  name: string;
   last_name: string;
-  email?: string | null;
-  subjects_count?: number;
+  address?: string | null;
+  age?: number | null;
 }
 
 interface Paginated<T> {
@@ -71,7 +72,7 @@ export default function TeachersIndex() {
           <input
             value={search}
             onChange={(e) => { setPage(1); setSearch(e.target.value); }}
-            placeholder="Search by name or email..."
+            placeholder="Search by name, document or address..."
             className="w-full max-w-sm rounded-md border border-sidebar-border/70 bg-transparent px-3 py-2 text-sm outline-none focus:border-foreground/40 dark:border-sidebar-border"
           />
         </div>
@@ -82,25 +83,29 @@ export default function TeachersIndex() {
               <thead className="bg-muted/30">
                 <tr>
                   <th className="px-4 py-3 font-medium">ID</th>
+                  <th className="px-4 py-3 font-medium">Document</th>
                   <th className="px-4 py-3 font-medium">Name</th>
-                  <th className="px-4 py-3 font-medium">Email</th>
-                  <th className="px-4 py-3 font-medium">Subjects</th>
+                  <th className="px-4 py-3 font-medium">Last name</th>
+                  <th className="px-4 py-3 font-medium">Address</th>
+                  <th className="px-4 py-3 font-medium">Age</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td className="px-4 py-6" colSpan={4}>Loading...</td></tr>
+                  <tr><td className="px-4 py-6" colSpan={6}>Loading...</td></tr>
                 ) : error ? (
-                  <tr><td className="px-4 py-6 text-red-600" colSpan={4}>Error: {error}</td></tr>
+                  <tr><td className="px-4 py-6 text-red-600" colSpan={6}>Error: {error}</td></tr>
                 ) : items.length === 0 ? (
-                  <tr><td className="px-4 py-6" colSpan={4}>No teachers found.</td></tr>
+                  <tr><td className="px-4 py-6" colSpan={6}>No teachers found.</td></tr>
                 ) : (
                   items.map((t) => (
                     <tr key={t.id} className="border-t border-sidebar-border/50">
                       <td className="px-4 py-3">{t.id}</td>
-                      <td className="px-4 py-3">{t.first_name} {t.last_name}</td>
-                      <td className="px-4 py-3">{t.email ?? '—'}</td>
-                      <td className="px-4 py-3">{t.subjects_count ?? 0}</td>
+                      <td className="px-4 py-3">{t.document ?? '—'}</td>
+                      <td className="px-4 py-3">{t.name}</td>
+                      <td className="px-4 py-3">{t.last_name}</td>
+                      <td className="px-4 py-3">{t.address ?? '—'}</td>
+                      <td className="px-4 py-3">{t.age ?? '—'}</td>
                     </tr>
                   ))
                 )}
