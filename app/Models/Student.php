@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Student extends Person
 {
@@ -15,4 +16,9 @@ class Student extends Person
      * @var list<string>
      */
     protected $table = 'students';
+
+    public function subjects(): BelongsToMany
+    {
+        return $this->belongsToMany(Subject::class);
+    }
 }

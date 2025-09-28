@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
 class Teacher extends Person
@@ -34,5 +35,10 @@ class Teacher extends Person
                 $teacher->teachers_code = 'TC-'.$formattedNumber;
             });
         });
+    }
+
+    public function subjects(): HasMany
+    {
+        return $this->hasMany(Subject::class);
     }
 }
