@@ -3,7 +3,9 @@
 namespace App\Filament\Resources\Students\RelationManagers;
 
 use Filament\Actions\AttachAction;
+use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
+use Filament\Actions\DetachBulkAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -37,6 +39,12 @@ class SubjectsRelationManager extends RelationManager
                 DetachAction::make()
                     ->iconButton()
                     ->icon(Heroicon::OutlinedMinusCircle),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DetachBulkAction::make()
+                        ->icon(Heroicon::OutlinedMinusCircle),
+                ]),
             ]);
     }
 }

@@ -28,37 +28,10 @@ class StudentsRelationManager extends RelationManager
         return false;
     }
 
-    public function form(Schema $schema): Schema
-    {
-        return $schema
-            ->components([
-                TextInput::make('document')
-                    ->required(),
-                TextInput::make('name')
-                    ->required(),
-                TextInput::make('last_name')
-                    ->required(),
-                TextInput::make('address')
-                    ->required(),
-                TextInput::make('email')
-                    ->label('Email address')
-                    ->email()
-                    ->required(),
-                TextInput::make('phone')
-                    ->tel()
-                    ->required(),
-                Select::make('gender')
-                    ->options(['male' => 'Male', 'female' => 'Female', 'other' => 'Other']),
-                Select::make('document_type')
-                    ->options(['passport' => 'Passport', 'id_card' => 'Id card']),
-                DatePicker::make('birth_date'),
-            ]);
-    }
-
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('name')
+            ->recordTitleAttribute('document')
             ->columns([
                 TextColumn::make('document')
                     ->searchable(),
