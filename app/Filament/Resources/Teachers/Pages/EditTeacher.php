@@ -16,4 +16,9 @@ class EditTeacher extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    public function getRelationManagers(): array
+    {
+        return [];
+    }
 }

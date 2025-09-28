@@ -6,6 +6,7 @@ use App\Filament\Resources\Teachers\Pages\CreateTeacher;
 use App\Filament\Resources\Teachers\Pages\EditTeacher;
 use App\Filament\Resources\Teachers\Pages\ListTeachers;
 use App\Filament\Resources\Teachers\Pages\ViewTeacher;
+use App\Filament\Resources\Teachers\RelationManagers\SubjectsRelationManager;
 use App\Filament\Resources\Teachers\Schemas\TeacherForm;
 use App\Filament\Resources\Teachers\Schemas\TeacherInfolist;
 use App\Filament\Resources\Teachers\Tables\TeachersTable;
@@ -46,6 +47,7 @@ class TeacherResource extends Resource
     public static function getRelations(): array
     {
         return [
+            'subjects' => SubjectsRelationManager::class,
         ];
     }
 

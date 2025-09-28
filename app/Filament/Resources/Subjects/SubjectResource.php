@@ -6,6 +6,7 @@ use App\Filament\Resources\Subjects\Pages\CreateSubject;
 use App\Filament\Resources\Subjects\Pages\EditSubject;
 use App\Filament\Resources\Subjects\Pages\ListSubjects;
 use App\Filament\Resources\Subjects\Pages\ViewSubject;
+use App\Filament\Resources\Subjects\RelationManagers\StudentsRelationManager;
 use App\Filament\Resources\Subjects\Schemas\SubjectForm;
 use App\Filament\Resources\Subjects\Schemas\SubjectInfolist;
 use App\Filament\Resources\Subjects\Tables\SubjectsTable;
@@ -56,6 +57,7 @@ class SubjectResource extends Resource
     public static function getRelations(): array
     {
         return [
+            StudentsRelationManager::class,
         ];
     }
 
