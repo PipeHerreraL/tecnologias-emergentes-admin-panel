@@ -27,7 +27,7 @@ class TeacherForm
                                 'male' => 'Male',
                                 'female' => 'Female',
                                 'other' => 'Other',
-                            ]),
+                            ])->columns(3),
                     ]),
                 Section::make('Identity')
                     ->schema([

@@ -22,15 +22,24 @@ class TeacherInfolist
                         TextEntry::make('age'),
                         TextEntry::make('gender')
                             ->formatStateUsing(fn (string $state): string => ucfirst($state)),
-                    ]),
+                    ])->columns(2),
                 Section::make('Identity')
                     ->schema([
                         TextEntry::make('document_type')
-                            ->formatStateUsing(fn (string $state): string => ucfirst($state)),
+                            ->formatStateUsing(fn (string $state): string => match ($state) {
+                                'id_card' => 'ID Card',
+                                'passport' => 'Passport',
+                                default => ucfirst($state),
+                            }),
                         TextEntry::make('document'),
                         TextEntry::make('birth_date')
                             ->date(),
+                    ])->columns(3),
+
+                Section::make('Teacher')
+                    ->schema([
+                        TextEntry::make('teachers_code'),
                     ]),
-            ]);
+            ])->columns(1);
     }
 }
