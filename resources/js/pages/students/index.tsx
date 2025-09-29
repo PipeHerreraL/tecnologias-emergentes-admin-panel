@@ -1,5 +1,5 @@
 import SimpleTable, { type Column } from '@/components/admin/simple-table';
-import AppShell from '@/components/app-shell';
+import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { PageProps } from '@/types';
 
 export type Student = {
@@ -34,13 +34,13 @@ export default function StudentsIndex({ items }: Props) {
   ];
 
   return (
-    <AppShell title="Students">
+    <AppSidebarLayout>
       <SimpleTable<Student>
         title="Students"
         description="Browse and search students"
         items={items}
         columns={columns}
       />
-    </AppShell>
+    </AppSidebarLayout>
   );
 }
