@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * @method static findOrFail(mixed $subject_id)
+ */
 class Subject extends Model
 {
     /** @use HasFactory<SubjectFactory> */

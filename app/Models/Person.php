@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Attribute;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -55,7 +55,7 @@ abstract class Person extends Model
         return Attribute::make(
             get: fn () => is_null($this->birth_date)
                 ? null
-                : $this->birth_date->diffInYears(Carbon::now()),
+                : intval($this->birth_date->diffInYears(Carbon::now())),
         );
     }
 }
