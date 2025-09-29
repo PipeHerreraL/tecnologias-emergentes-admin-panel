@@ -1,7 +1,7 @@
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
-import { Link, useForm } from '@inertiajs/react';
+import { Link, useForm, router } from '@inertiajs/react';
 
 type Teacher = { id: number; name: string | null; last_name: string | null };
 
@@ -25,12 +25,16 @@ export default function SubjectEdit({ item, teachers }: Props) {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    put(`/subjects/${item.id}`);
+    put(`/subjects/${item.id}`, {
+      onSuccess: () => router.visit(`/subjects`),
+    });
   };
 
   const onDelete = () => {
     if (confirm('Are you sure you want to delete this subject? This action cannot be undone.')) {
-      destroy(`/subjects/${item.id}`);
+      destroy(`/subjects/${item.id}`, {
+        onSuccess: () => router.visit('/subjects'),
+      });
     }
   };
 

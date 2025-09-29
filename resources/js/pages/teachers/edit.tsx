@@ -1,7 +1,7 @@
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
-import { Link, useForm } from '@inertiajs/react';
+import { Link, useForm, router } from '@inertiajs/react';
 
 type Item = {
   id: number;
@@ -31,12 +31,16 @@ export default function TeacherEdit({ item }: { item: Item }) {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    put(`/teachers/${item.id}`);
+    put(`/teachers/${item.id}`, {
+      onSuccess: () => router.visit(`/teachers`),
+    });
   };
 
   const onDelete = () => {
     if (confirm('Are you sure you want to delete this teacher? This action cannot be undone.')) {
-      destroy(`/teachers/${item.id}`);
+      destroy(`/teachers/${item.id}`, {
+        onSuccess: () => router.visit('/teachers'),
+      });
     }
   };
 
