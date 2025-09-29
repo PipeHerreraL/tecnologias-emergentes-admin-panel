@@ -1,4 +1,4 @@
-import { router, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Heading from '@/components/heading';
@@ -23,9 +23,11 @@ type Props<T> = {
   items: Paginator<T>;
   columns: Column<T>[];
   getRowHref?: (row: T) => string | undefined;
+  actionHref?: string;
+  actionLabel?: string;
 };
 
-export default function SimpleTable<T extends Record<string, unknown>>({ title, description, items, columns, getRowHref }: Props<T>) {
+export default function SimpleTable<T extends Record<string, unknown>>({ title, description, items, columns, getRowHref, actionHref, actionLabel }: Props<T>) {
   const page = usePage();
   const url = (page.url || '').split('?')[0] || '';
   const initialQ = useMemo(() => new URLSearchParams((page.url.split('?')[1] ?? '')).get('q') ?? '', [page.url]);
@@ -64,15 +66,22 @@ export default function SimpleTable<T extends Record<string, unknown>>({ title, 
           </div>
           <Button size="sm" onClick={() => goto({ page: 1 })}>Filter</Button>
         </div>
-        <div>
-          <label className="block text-sm text-muted-foreground mb-1">Per page</label>
-          <select
-            className="h-9 rounded-md border bg-background px-2 text-sm"
-            value={perPage}
-            onChange={(e) => { setPerPage(parseInt(e.target.value)); setTimeout(() => goto({ page: 1 }), 0); }}
-          >
-            {[10, 15, 25, 50].map(n => <option key={n} value={n}>{n}</option>)}
-          </select>
+        <div className="flex items-end gap-2">
+          <div>
+            <label className="block text-sm text-muted-foreground mb-1">Per page</label>
+            <select
+              className="h-9 rounded-md border bg-background px-2 text-sm"
+              value={perPage}
+              onChange={(e) => { setPerPage(parseInt(e.target.value)); setTimeout(() => goto({ page: 1 }), 0); }}
+            >
+              {[10, 15, 25, 50].map(n => <option key={n} value={n}>{n}</option>)}
+            </select>
+          </div>
+          {actionHref && actionLabel && (
+            <Button asChild size="sm">
+              <Link href={actionHref}>{actionLabel}</Link>
+            </Button>
+          )}
         </div>
       </div>
 

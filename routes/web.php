@@ -66,6 +66,73 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('subjects.index');
 
+    // Create pages
+    Route::get('students/create', function () {
+        return Inertia::render('students/create');
+    })->name('students.create');
+
+    Route::post('students', function (\Illuminate\Http\Request $request) {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'gender' => 'nullable|string|max:50',
+            'document_type' => 'nullable|string|max:50',
+            'document' => 'nullable|string|max:255',
+            'birth_date' => 'nullable|date',
+        ]);
+        $student = \App\Models\Student::create($data);
+        return redirect()->route('students.show', $student);
+    })->name('students.store');
+
+    Route::get('teachers/create', function () {
+        return Inertia::render('teachers/create');
+    })->name('teachers.create');
+
+    Route::post('teachers', function (\Illuminate\Http\Request $request) {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'gender' => 'nullable|string|max:50',
+            'document_type' => 'nullable|string|max:50',
+            'document' => 'nullable|string|max:255',
+            'birth_date' => 'nullable|date',
+        ]);
+        $teacher = \App\Models\Teacher::create($data);
+        return redirect()->route('teachers.show', $teacher);
+    })->name('teachers.store');
+
+    Route::get('subjects/create', function () {
+        $teachers = \App\Models\Teacher::query()
+            ->select(['id','name','last_name'])
+            ->orderBy('name')
+            ->get();
+        return Inertia::render('subjects/create', [
+            'teachers' => $teachers,
+        ]);
+    })->name('subjects.create');
+
+    Route::post('subjects', function (\Illuminate\Http\Request $request) {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'code' => 'required|string|max:255',
+            'credits' => 'required|integer|min:0',
+            'teacher_id' => 'sometimes|nullable|exists:teachers,id',
+        ]);
+        $subject = new \App\Models\Subject();
+        $subject->fill(collect($data)->only(['name','code','credits'])->all());
+        if (array_key_exists('teacher_id', $data)) {
+            $subject->teacher()->associate($data['teacher_id']);
+        }
+        $subject->save();
+        return redirect()->route('subjects.show', $subject);
+    })->name('subjects.store');
+
     // Show pages
     Route::get('students/{student}', function (\App\Models\Student $student) {
         return Inertia::render('students/show', [

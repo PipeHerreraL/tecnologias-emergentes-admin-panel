@@ -36,6 +36,8 @@ export default function SubjectsIndex({ items }: Props) {
         items={items}
         columns={columns}
         getRowHref={(row) => `/subjects/${row.id}`}
+        actionHref="/subjects/create"
+        actionLabel="New Subject"
       />
     </AppSidebarLayout>
   );

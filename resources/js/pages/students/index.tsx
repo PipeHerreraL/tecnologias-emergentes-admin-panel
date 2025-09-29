@@ -40,6 +40,8 @@ export default function StudentsIndex({ items }: Props) {
         items={items}
         columns={columns}
         getRowHref={(row) => `/students/${row.id}`}
+        actionHref="/students/create"
+        actionLabel="New Student"
       />
     </AppSidebarLayout>
   );
