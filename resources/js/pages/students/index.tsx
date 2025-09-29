@@ -3,7 +3,7 @@ import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { PageProps } from '@/types';
 
 export type Student = {
-  id: number;
+  document: number;
   name: string;
   last_name: string;
   email?: string | null;
@@ -25,11 +25,9 @@ type Props = PageProps & {
 
 export default function StudentsIndex({ items }: Props) {
   const columns: Column<Student>[] = [
-    { header: 'ID', accessor: (r) => r.id, className: 'w-[80px]' },
+    { header: 'Document', accessor: (r) => r.document, className: 'w-[80px]' },
     { header: 'Name', accessor: (r) => r.name },
     { header: 'Last name', accessor: (r) => r.last_name },
-    { header: 'Email', accessor: (r) => r.email ?? '' },
-    { header: 'Phone', accessor: (r) => r.phone ?? '' },
     { header: 'Age', accessor: (r) => r.age ?? '' },
   ];
 

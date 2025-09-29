@@ -7,7 +7,6 @@ export type Subject = {
   name: string;
   code: string;
   credits: number;
-  teacher_id?: number | null;
 };
 
 type Paginator<T> = {
@@ -24,11 +23,9 @@ type Props = PageProps & {
 
 export default function SubjectsIndex({ items }: Props) {
   const columns: Column<Subject>[] = [
-    { header: 'ID', accessor: (r) => r.id, className: 'w-[80px]' },
     { header: 'Name', accessor: (r) => r.name },
     { header: 'Code', accessor: (r) => r.code },
     { header: 'Credits', accessor: (r) => r.credits },
-    { header: 'Teacher ID', accessor: (r) => r.teacher_id ?? '' },
   ];
 
   return (

@@ -3,12 +3,12 @@ import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { PageProps } from '@/types';
 
 export type Teacher = {
-  id: number;
-  teachers_code?: string | null;
-  name: string;
-  last_name: string;
-  email?: string | null;
-  phone?: string | null;
+    document: number;
+    name: string;
+    last_name: string;
+    email?: string | null;
+    phone?: string | null;
+    age?: number | null;
 };
 
 type Paginator<T> = {
@@ -25,12 +25,10 @@ type Props = PageProps & {
 
 export default function TeachersIndex({ items }: Props) {
   const columns: Column<Teacher>[] = [
-    { header: 'ID', accessor: (r) => r.id, className: 'w-[80px]' },
-    { header: 'Code', accessor: (r) => r.teachers_code ?? '' },
-    { header: 'Name', accessor: (r) => r.name },
-    { header: 'Last name', accessor: (r) => r.last_name },
-    { header: 'Email', accessor: (r) => r.email ?? '' },
-    { header: 'Phone', accessor: (r) => r.phone ?? '' },
+      { header: 'Document', accessor: (r) => r.document, className: 'w-[80px]' },
+      { header: 'Name', accessor: (r) => r.name },
+      { header: 'Last name', accessor: (r) => r.last_name },
+      { header: 'Age', accessor: (r) => r.age ?? '' },
   ];
 
   return (
