@@ -53,9 +53,7 @@ class AuthController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
-        if ($user) {
-            $user->forceFill(['remember_token' => null])->save();
-        }
+        $user?->forceFill(['remember_token' => null])->save();
 
         return response()->json(['message' => 'Logged out']);
     }

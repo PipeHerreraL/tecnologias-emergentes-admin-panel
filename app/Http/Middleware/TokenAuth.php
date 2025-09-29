@@ -18,9 +18,9 @@ class TokenAuth
     {
         $authHeader = $request->header('Authorization');
 
-        // When missing token
+        // When missing the token
         if (! $authHeader || ! str_starts_with($authHeader, 'Bearer ')) {
-            // If this is an Inertia request, respond with an Inertia location redirect to login
+            // If this is an Inertia request, respond with an Inertia location redirect to log in
             if ($request->header('X-Inertia')) {
                 return Inertia::location(route('login'));
             }

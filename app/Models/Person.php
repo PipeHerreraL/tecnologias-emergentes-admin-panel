@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Attribute;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -49,12 +50,12 @@ abstract class Person extends Model
      * Accessor to get the current age based on birth_date.
      * This field is calculated and NOT stored in the database.
      */
-    public function getAgeAttribute(): ?int
+    protected function Age(): Attribute
     {
-        if (is_null($this->birth_date)) {
-            return null;
-        }
-
-        return $this->birth_date->diffInYears(Carbon::now());
+        return Attribute::make(
+            get: fn () => is_null($this->birth_date)
+                ? null
+                : $this->birth_date->diffInYears(Carbon::now()),
+        );
     }
 }

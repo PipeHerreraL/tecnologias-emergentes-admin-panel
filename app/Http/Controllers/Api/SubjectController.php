@@ -11,9 +11,9 @@ class SubjectController extends Controller
     private function saveSubject(Request $request, Subject $subject, string $rule)
     {
         $data = $request->validate([
-            'name' => $rule . '|string|max:255',
-            'code' => $rule . '|string|max:255',
-            'credits' => $rule . '|integer|min:0',
+            'name' => $rule.'|string|max:255',
+            'code' => $rule.'|string|max:255',
+            'credits' => $rule.'|integer|min:0',
             'teacher_id' => 'sometimes|nullable|exists:teachers,id',
         ]);
 
@@ -36,6 +36,7 @@ class SubjectController extends Controller
     public function store(Request $request)
     {
         $subject = $this->saveSubject($request, new Subject, 'required');
+
         return response()->json($subject, 201);
     }
 
@@ -47,6 +48,7 @@ class SubjectController extends Controller
     public function update(Request $request, Subject $subject)
     {
         $subject = $this->saveSubject($request, $subject, 'sometimes');
+
         return response()->json($subject);
     }
 

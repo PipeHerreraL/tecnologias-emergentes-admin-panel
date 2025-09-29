@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use Database\Factories\TeacherFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @method static create(array $data)
+ */
 class Teacher extends Person
 {
-    /** @use HasFactory<\Database\Factories\TeacherFactory> */
+    /** @use HasFactory<TeacherFactory> */
     use HasFactory;
 
     protected $table = 'teachers';
