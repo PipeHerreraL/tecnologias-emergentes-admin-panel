@@ -5,7 +5,7 @@ import Heading from '@/components/heading';
 
 export type Column<T> = {
   header: string;
-  accessor: (row: T) => string | number | null | undefined;
+  accessor: (row: T) => React.ReactNode;
   className?: string;
 };
 
@@ -115,7 +115,7 @@ export default function SimpleTable<T extends Record<string, unknown>>({ title, 
                   }}
                 >
                   {columns.map((c, ci) => (
-                    <td key={ci} className={`px-3 py-2 ${c.className ?? ''}`}>{String(c.accessor(row) ?? '')}</td>
+                    <td key={ci} className={`px-3 py-2 ${c.className ?? ''}`}>{c.accessor(row as T)}</td>
                   ))}
                 </tr>
               );

@@ -222,24 +222,84 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Show pages
     Route::get('students/{student}', function (\App\Models\Student $student) {
+        // Load subjects attached to this student
+        $student->load(['subjects:id,name,code']);
+        // Subjects not yet attached to this student
+        $availableSubjects = \App\Models\Subject::query()
+            ->select(['id','name','code'])
+            ->whereNotIn('id', $student->subjects()->pluck('subjects.id'))
+            ->orderBy('name')
+            ->get();
+
         return Inertia::render('students/show', [
             'item' => $student,
+            'available_subjects' => $availableSubjects,
         ]);
     })->name('students.show');
 
+    Route::post('students/{student}/subjects/attach', function (\Illuminate\Http\Request $request, \App\Models\Student $student) {
+        $data = $request->validate([
+            'subject_id' => ['required','exists:subjects,id'],
+        ]);
+        // Attach only if not already attached
+        $student->subjects()->syncWithoutDetaching([$data['subject_id']]);
+        return redirect()->route('students.show', $student);
+    })->name('students.subjects.attach');
+
     Route::get('teachers/{teacher}', function (\App\Models\Teacher $teacher) {
+        // Load subjects associated to this teacher and include teachers_code on the model
+        $teacher->load(['subjects:id,name,code,teacher_id']);
+        // Subjects that are unassigned (teacher_id is null)
+        $availableSubjects = \App\Models\Subject::query()
+            ->select(['id','name','code'])
+            ->whereNull('teacher_id')
+            ->orderBy('name')
+            ->get();
+
         return Inertia::render('teachers/show', [
             'item' => $teacher,
+            'available_subjects' => $availableSubjects,
         ]);
     })->name('teachers.show');
 
+    Route::post('teachers/{teacher}/subjects/associate', function (\Illuminate\Http\Request $request, \App\Models\Teacher $teacher) {
+        $data = $request->validate([
+            'subject_id' => ['required','exists:subjects,id'],
+        ]);
+        $subject = \App\Models\Subject::findOrFail($data['subject_id']);
+        // Only allow association if currently unassigned
+        if (is_null($subject->teacher_id)) {
+            $subject->teacher()->associate($teacher->id);
+            $subject->save();
+        }
+        return redirect()->route('teachers.show', $teacher);
+    })->name('teachers.subjects.associate');
+
     Route::get('subjects/{subject}', function (\App\Models\Subject $subject) {
-        $subject->load(['teacher:id,name,last_name']);
+        $subject->load([
+            'teacher:id,name,last_name',
+            'students:id,name,last_name',
+        ]);
+        // Students not yet attached to this subject
+        $availableStudents = \App\Models\Student::query()
+            ->select(['id','name','last_name'])
+            ->whereNotIn('id', $subject->students()->pluck('students.id'))
+            ->orderBy('name')
+            ->get();
 
         return Inertia::render('subjects/show', [
             'item' => $subject,
+            'available_students' => $availableStudents,
         ]);
     })->name('subjects.show');
+
+    Route::post('subjects/{subject}/students/attach', function (\Illuminate\Http\Request $request, \App\Models\Subject $subject) {
+        $data = $request->validate([
+            'student_id' => ['required','exists:students,id'],
+        ]);
+        $subject->students()->syncWithoutDetaching([$data['student_id']]);
+        return redirect()->route('subjects.show', $subject);
+    })->name('subjects.students.attach');
 });
 
 require __DIR__.'/settings.php';
