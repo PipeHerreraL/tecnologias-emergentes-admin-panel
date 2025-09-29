@@ -4,6 +4,8 @@ import { usePage } from '@inertiajs/react';
 
 interface AppShellProps {
     children: React.ReactNode;
+    title?: string;
+    description?: string;
     variant?: 'header' | 'sidebar';
 }
 
@@ -18,3 +20,5 @@ export function AppShell({ children, variant = 'header' }: AppShellProps) {
 
     return <SidebarProvider defaultOpen={isOpen}>{children}</SidebarProvider>;
 }
+
+export default AppShell;
