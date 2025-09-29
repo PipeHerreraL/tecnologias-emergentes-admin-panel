@@ -11,6 +11,7 @@ class SubjectController extends Controller
     public function index(Request $request)
     {
         $perPage = (int) $request->query('per_page', 15);
+
         return response()->json(Subject::query()->paginate($perPage));
     }
 
@@ -23,8 +24,8 @@ class SubjectController extends Controller
             'teacher_id' => 'sometimes|nullable|exists:teachers,id',
         ]);
 
-        $subject = new Subject();
-        $subject->fill(collect($data)->only(['name','code','credits'])->all());
+        $subject = new Subject;
+        $subject->fill(collect($data)->only(['name', 'code', 'credits'])->all());
         if (array_key_exists('teacher_id', $data)) {
             $subject->teacher()->associate($data['teacher_id']);
         }
@@ -47,7 +48,7 @@ class SubjectController extends Controller
             'teacher_id' => 'sometimes|nullable|exists:teachers,id',
         ]);
 
-        $subject->fill(collect($data)->only(['name','code','credits'])->all());
+        $subject->fill(collect($data)->only(['name', 'code', 'credits'])->all());
         if (array_key_exists('teacher_id', $data)) {
             $subject->teacher()->associate($data['teacher_id']);
         }

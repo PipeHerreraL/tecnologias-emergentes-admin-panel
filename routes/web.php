@@ -84,6 +84,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'birth_date' => 'nullable|date',
         ]);
         $student = \App\Models\Student::create($data);
+
         return redirect()->route('students.show', $student);
     })->name('students.store');
 
@@ -104,14 +105,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'birth_date' => 'nullable|date',
         ]);
         $teacher = \App\Models\Teacher::create($data);
+
         return redirect()->route('teachers.show', $teacher);
     })->name('teachers.store');
 
     Route::get('subjects/create', function () {
         $teachers = \App\Models\Teacher::query()
-            ->select(['id','name','last_name'])
+            ->select(['id', 'name', 'last_name'])
             ->orderBy('name')
             ->get();
+
         return Inertia::render('subjects/create', [
             'teachers' => $teachers,
         ]);
@@ -124,12 +127,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'credits' => 'required|integer|min:0',
             'teacher_id' => 'sometimes|nullable|exists:teachers,id',
         ]);
-        $subject = new \App\Models\Subject();
-        $subject->fill(collect($data)->only(['name','code','credits'])->all());
+        $subject = new \App\Models\Subject;
+        $subject->fill(collect($data)->only(['name', 'code', 'credits'])->all());
         if (array_key_exists('teacher_id', $data)) {
             $subject->teacher()->associate($data['teacher_id']);
         }
         $subject->save();
+
         return redirect()->route('subjects.show', $subject);
     })->name('subjects.store');
 
@@ -153,11 +157,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'birth_date' => 'nullable|date',
         ]);
         $student->update($data);
+
         return redirect()->route('students.show', $student);
     })->name('students.update');
 
     Route::delete('students/{student}', function (\App\Models\Student $student) {
         $student->delete();
+
         return redirect()->route('students.index');
     })->name('students.destroy');
 
@@ -180,20 +186,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'birth_date' => 'nullable|date',
         ]);
         $teacher->update($data);
+
         return redirect()->route('teachers.show', $teacher);
     })->name('teachers.update');
 
     Route::delete('teachers/{teacher}', function (\App\Models\Teacher $teacher) {
         $teacher->delete();
+
         return redirect()->route('teachers.index');
     })->name('teachers.destroy');
 
     Route::get('subjects/{subject}/edit', function (\App\Models\Subject $subject) {
         $teachers = \App\Models\Teacher::query()
-            ->select(['id','name','last_name'])
+            ->select(['id', 'name', 'last_name'])
             ->orderBy('name')
             ->get();
         $subject->load(['teacher:id,name,last_name']);
+
         return Inertia::render('subjects/edit', [
             'item' => $subject,
             'teachers' => $teachers,
@@ -207,16 +216,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'credits' => 'sometimes|required|integer|min:0',
             'teacher_id' => 'sometimes|nullable|exists:teachers,id',
         ]);
-        $subject->fill(collect($data)->only(['name','code','credits'])->all());
+        $subject->fill(collect($data)->only(['name', 'code', 'credits'])->all());
         if (array_key_exists('teacher_id', $data)) {
             $subject->teacher()->associate($data['teacher_id']);
         }
         $subject->save();
+
         return redirect()->route('subjects.show', $subject);
     })->name('subjects.update');
 
     Route::delete('subjects/{subject}', function (\App\Models\Subject $subject) {
         $subject->delete();
+
         return redirect()->route('subjects.index');
     })->name('subjects.destroy');
 
@@ -226,7 +237,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         $student->load(['subjects:id,name,code']);
         // Subjects not yet attached to this student
         $availableSubjects = \App\Models\Subject::query()
-            ->select(['id','name','code'])
+            ->select(['id', 'name', 'code'])
             ->whereNotIn('id', $student->subjects()->pluck('subjects.id'))
             ->orderBy('name')
             ->get();
@@ -239,10 +250,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('students/{student}/subjects/attach', function (\Illuminate\Http\Request $request, \App\Models\Student $student) {
         $data = $request->validate([
-            'subject_id' => ['required','exists:subjects,id'],
+            'subject_id' => ['required', 'exists:subjects,id'],
         ]);
         // Attach only if not already attached
         $student->subjects()->syncWithoutDetaching([$data['subject_id']]);
+
         return redirect()->route('students.show', $student);
     })->name('students.subjects.attach');
 
@@ -251,7 +263,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         $teacher->load(['subjects:id,name,code,teacher_id']);
         // Subjects that are unassigned (teacher_id is null)
         $availableSubjects = \App\Models\Subject::query()
-            ->select(['id','name','code'])
+            ->select(['id', 'name', 'code'])
             ->whereNull('teacher_id')
             ->orderBy('name')
             ->get();
@@ -264,7 +276,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('teachers/{teacher}/subjects/associate', function (\Illuminate\Http\Request $request, \App\Models\Teacher $teacher) {
         $data = $request->validate([
-            'subject_id' => ['required','exists:subjects,id'],
+            'subject_id' => ['required', 'exists:subjects,id'],
         ]);
         $subject = \App\Models\Subject::findOrFail($data['subject_id']);
         // Only allow association if currently unassigned
@@ -272,6 +284,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             $subject->teacher()->associate($teacher->id);
             $subject->save();
         }
+
         return redirect()->route('teachers.show', $teacher);
     })->name('teachers.subjects.associate');
 
@@ -282,7 +295,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
         // Students not yet attached to this subject
         $availableStudents = \App\Models\Student::query()
-            ->select(['id','name','last_name'])
+            ->select(['id', 'name', 'last_name'])
             ->whereNotIn('id', $subject->students()->pluck('students.id'))
             ->orderBy('name')
             ->get();
@@ -295,9 +308,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('subjects/{subject}/students/attach', function (\Illuminate\Http\Request $request, \App\Models\Subject $subject) {
         $data = $request->validate([
-            'student_id' => ['required','exists:students,id'],
+            'student_id' => ['required', 'exists:students,id'],
         ]);
         $subject->students()->syncWithoutDetaching([$data['student_id']]);
+
         return redirect()->route('subjects.show', $subject);
     })->name('subjects.students.attach');
 });

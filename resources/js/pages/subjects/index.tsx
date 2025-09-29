@@ -5,65 +5,77 @@ import { router } from '@inertiajs/react';
 import { Pencil, Trash2 } from 'lucide-react';
 
 export type Subject = {
-  id: number;
-  name: string;
-  code: string;
-  credits: number;
+    id: number;
+    name: string;
+    code: string;
+    credits: number;
 };
 
 type Paginator<T> = {
-  data: T[];
-  current_page: number;
-  per_page: number;
-  last_page: number;
-  total: number;
+    data: T[];
+    current_page: number;
+    per_page: number;
+    last_page: number;
+    total: number;
 };
 
 type Props = PageProps & {
-  items: Paginator<Subject>;
+    items: Paginator<Subject>;
 };
 
 export default function SubjectsIndex({ items }: Props) {
-  const columns: Column<Subject>[] = [
-    { header: 'Name', accessor: (r) => r.name },
-    { header: 'Code', accessor: (r) => r.code },
-    { header: 'Credits', accessor: (r) => r.credits },
-    { header: 'Actions', accessor: (r) => (
-      <div className="flex items-center gap-1 justify-end" onClick={(e) => e.stopPropagation()}>
-        <button
-          className="inline-flex h-8 w-8 items-center justify-center rounded-md border hover:bg-muted"
-          title="Edit"
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); router.visit(`/subjects/${r.id}/edit`); }}
-        >
-          <Pencil className="h-4 w-4" />
-        </button>
-        <button
-          className="inline-flex h-8 w-8 items-center justify-center rounded-md border hover:bg-muted"
-          title="Delete"
-          onClick={(e) => {
-            e.preventDefault(); e.stopPropagation();
-            if (confirm('Delete this subject?')) {
-              router.delete(`/subjects/${r.id}`);
-            }
-          }}
-        >
-          <Trash2 className="h-4 w-4 text-red-600" />
-        </button>
-      </div>
-    ), className: 'w-[110px] text-right' },
-  ];
+    const columns: Column<Subject>[] = [
+        { header: 'Name', accessor: (r) => r.name },
+        { header: 'Code', accessor: (r) => r.code },
+        { header: 'Credits', accessor: (r) => r.credits },
+        {
+            header: 'Actions',
+            accessor: (r) => (
+                <div
+                    className="flex items-center justify-end gap-1"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <button
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md border hover:bg-muted"
+                        title="Edit"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            router.visit(`/subjects/${r.id}/edit`);
+                        }}
+                    >
+                        <Pencil className="h-4 w-4" />
+                    </button>
+                    <button
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md border hover:bg-muted"
+                        title="Delete"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (confirm('Delete this subject?')) {
+                                router.delete(`/subjects/${r.id}`);
+                            }
+                        }}
+                    >
+                        <Trash2 className="h-4 w-4 text-red-600" />
+                    </button>
+                </div>
+            ),
+            className: 'w-[110px] text-right',
+        },
+    ];
 
-  return (
-    <AppSidebarLayout>
-      <SimpleTable<Subject>
-        title="Subjects"
-        description="Browse and search subjects"
-        items={items}
-        columns={columns}
-        getRowHref={(row) => `/subjects/${row.id}`}
-        actionHref="/subjects/create"
-        actionLabel="New Subject"
-      />
-    </AppSidebarLayout>
-  );
+    return (
+        <AppSidebarLayout>
+            <SimpleTable<Subject>
+                title="Subjects"
+                description="Browse and search subjects"
+                items={items}
+                columns={columns}
+                getRowHref={(row) => `/subjects/${row.id}`}
+                actionHref="/subjects/create"
+                actionLabel="New Subject"
+            />
+        </AppSidebarLayout>
+    );
 }

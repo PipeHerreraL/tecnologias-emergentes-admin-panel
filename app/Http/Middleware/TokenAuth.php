@@ -19,7 +19,7 @@ class TokenAuth
         $authHeader = $request->header('Authorization');
 
         // When missing token
-        if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
+        if (! $authHeader || ! str_starts_with($authHeader, 'Bearer ')) {
             // If this is an Inertia request, respond with an Inertia location redirect to login
             if ($request->header('X-Inertia')) {
                 return Inertia::location(route('login'));
@@ -28,6 +28,7 @@ class TokenAuth
             if ($request->expectsJson() || $request->is('api/*')) {
                 return response()->json(['message' => 'Unauthorized. Missing bearer token.'], 401);
             }
+
             // Fallback to a guest redirect for regular browser requests
             return redirect()->guest(route('login'));
         }
@@ -37,13 +38,14 @@ class TokenAuth
         /** @var User|null $user */
         $user = User::query()->where('remember_token', $token)->first();
 
-        if (!$user) {
+        if (! $user) {
             if ($request->header('X-Inertia')) {
                 return Inertia::location(route('login'));
             }
             if ($request->expectsJson() || $request->is('api/*')) {
                 return response()->json(['message' => 'Unauthorized. Invalid token.'], 401);
             }
+
             return redirect()->guest(route('login'));
         }
 

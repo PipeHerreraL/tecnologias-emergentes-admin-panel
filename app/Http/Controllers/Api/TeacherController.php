@@ -11,6 +11,7 @@ class TeacherController extends Controller
     public function index(Request $request)
     {
         $perPage = (int) $request->query('per_page', 15);
+
         return response()->json(Teacher::query()->paginate($perPage));
     }
 
