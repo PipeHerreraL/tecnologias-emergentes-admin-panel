@@ -2,6 +2,7 @@ import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import { Link, router, useForm } from '@inertiajs/react';
+import React from 'react';
 
 type Item = {
     id: number;

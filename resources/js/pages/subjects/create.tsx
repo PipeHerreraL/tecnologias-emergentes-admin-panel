@@ -2,6 +2,7 @@ import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import { Link, useForm } from '@inertiajs/react';
+import React from 'react';
 
 type Teacher = { id: number; name: string | null; last_name: string | null };
 
@@ -29,7 +30,7 @@ export default function SubjectCreate({ teachers }: Props) {
                         description="Add a new subject"
                     />
                     <Button asChild variant="outline" size="sm">
-                        <Link href="/subjects">Cancel</Link>
+                        <Link href={"/subjects"}>Cancel</Link>
                     </Button>
                 </div>
 
@@ -145,7 +146,7 @@ export default function SubjectCreate({ teachers }: Props) {
                             Create
                         </Button>
                         <Button asChild type="button" variant="outline">
-                            <Link href="/subjects">Cancel</Link>
+                            <Link href={"/subjects"}>Cancel</Link>
                         </Button>
                     </div>
                 </form>

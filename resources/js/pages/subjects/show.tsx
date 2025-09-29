@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { PageProps } from '@/types';
 import { Link, useForm } from '@inertiajs/react';
+import React from 'react';
 
 function Field({ label, value }: { label: string; value: unknown }) {
     const v =
@@ -70,7 +71,7 @@ export default function SubjectShow({ item, available_students = [] }: Props) {
                             <Link href={`/subjects/${it.id}/edit`}>Edit</Link>
                         </Button>
                         <Button asChild variant="outline" size="sm">
-                            <Link href="/subjects">Volver</Link>
+                            <Link href={"/subjects"}>Volver</Link>
                         </Button>
                     </div>
                 </div>

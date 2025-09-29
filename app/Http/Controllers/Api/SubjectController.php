@@ -8,6 +8,24 @@ use Illuminate\Http\Request;
 
 class SubjectController extends Controller
 {
+    private function saveSubject(Request $request, Subject $subject, string $rule)
+    {
+        $data = $request->validate([
+            'name' => $rule . '|string|max:255',
+            'code' => $rule . '|string|max:255',
+            'credits' => $rule . '|integer|min:0',
+            'teacher_id' => 'sometimes|nullable|exists:teachers,id',
+        ]);
+
+        $subject->fill(collect($data)->only(['name', 'code', 'credits'])->all());
+        if (array_key_exists('teacher_id', $data)) {
+            $subject->teacher()->associate($data['teacher_id']);
+        }
+        $subject->save();
+
+        return $subject;
+    }
+
     public function index(Request $request)
     {
         $perPage = (int) $request->query('per_page', 15);
@@ -17,20 +35,7 @@ class SubjectController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255',
-            'credits' => 'required|integer|min:0',
-            'teacher_id' => 'sometimes|nullable|exists:teachers,id',
-        ]);
-
-        $subject = new Subject;
-        $subject->fill(collect($data)->only(['name', 'code', 'credits'])->all());
-        if (array_key_exists('teacher_id', $data)) {
-            $subject->teacher()->associate($data['teacher_id']);
-        }
-        $subject->save();
-
+        $subject = $this->saveSubject($request, new Subject, 'required');
         return response()->json($subject, 201);
     }
 
@@ -41,19 +46,7 @@ class SubjectController extends Controller
 
     public function update(Request $request, Subject $subject)
     {
-        $data = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'code' => 'sometimes|string|max:255',
-            'credits' => 'sometimes|integer|min:0',
-            'teacher_id' => 'sometimes|nullable|exists:teachers,id',
-        ]);
-
-        $subject->fill(collect($data)->only(['name', 'code', 'credits'])->all());
-        if (array_key_exists('teacher_id', $data)) {
-            $subject->teacher()->associate($data['teacher_id']);
-        }
-        $subject->save();
-
+        $subject = $this->saveSubject($request, $subject, 'sometimes');
         return response()->json($subject);
     }
 

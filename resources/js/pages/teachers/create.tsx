@@ -2,6 +2,7 @@ import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import { Link, useForm } from '@inertiajs/react';
+import React from 'react';
 
 export default function TeacherCreate() {
     const { data, setData, post, processing, errors } = useForm({
@@ -30,7 +31,7 @@ export default function TeacherCreate() {
                         description="Add a new teacher"
                     />
                     <Button asChild variant="outline" size="sm">
-                        <Link href="/teachers">Cancel</Link>
+                        <Link href={"/teachers"}>Cancel</Link>
                     </Button>
                 </div>
 
@@ -232,7 +233,7 @@ export default function TeacherCreate() {
                             Create
                         </Button>
                         <Button asChild type="button" variant="outline">
-                            <Link href="/teachers">Cancel</Link>
+                            <Link href={"/teachers"}>Cancel</Link>
                         </Button>
                     </div>
                 </form>

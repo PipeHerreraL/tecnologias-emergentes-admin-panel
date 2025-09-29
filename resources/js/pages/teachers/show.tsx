@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { PageProps } from '@/types';
 import { Link, useForm } from '@inertiajs/react';
+import React from 'react';
 
 function formatDateMDY(value: unknown): string {
     if (!value) return '-';
@@ -71,7 +72,7 @@ export default function TeacherShow({ item, available_subjects = [] }: Props) {
                             <Link href={`/teachers/${it.id}/edit`}>Edit</Link>
                         </Button>
                         <Button asChild variant="outline" size="sm">
-                            <Link href="/teachers">Volver</Link>
+                            <Link href={"/teachers"}>Volver</Link>
                         </Button>
                     </div>
                 </div>
