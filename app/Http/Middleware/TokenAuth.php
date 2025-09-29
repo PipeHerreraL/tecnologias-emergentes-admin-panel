@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
 class TokenAuth
@@ -17,8 +18,18 @@ class TokenAuth
     {
         $authHeader = $request->header('Authorization');
 
+        // When missing token
         if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
-            return response()->json(['message' => 'Unauthorized. Missing bearer token.'], 401);
+            // If this is an Inertia request, respond with an Inertia location redirect to login
+            if ($request->header('X-Inertia')) {
+                return Inertia::location(route('login'));
+            }
+            // If it's an API/json request, keep returning JSON
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json(['message' => 'Unauthorized. Missing bearer token.'], 401);
+            }
+            // Fallback to a guest redirect for regular browser requests
+            return redirect()->guest(route('login'));
         }
 
         $token = substr($authHeader, 7);
@@ -27,7 +38,13 @@ class TokenAuth
         $user = User::query()->where('remember_token', $token)->first();
 
         if (!$user) {
-            return response()->json(['message' => 'Unauthorized. Invalid token.'], 401);
+            if ($request->header('X-Inertia')) {
+                return Inertia::location(route('login'));
+            }
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json(['message' => 'Unauthorized. Invalid token.'], 401);
+            }
+            return redirect()->guest(route('login'));
         }
 
         // Authenticate the user for the current request lifecycle

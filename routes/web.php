@@ -133,6 +133,93 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return redirect()->route('subjects.show', $subject);
     })->name('subjects.store');
 
+    // Edit pages
+    Route::get('students/{student}/edit', function (\App\Models\Student $student) {
+        return Inertia::render('students/edit', [
+            'item' => $student,
+        ]);
+    })->name('students.edit');
+
+    Route::put('students/{student}', function (\Illuminate\Http\Request $request, \App\Models\Student $student) {
+        $data = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'last_name' => 'sometimes|required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'gender' => 'nullable|string|max:50',
+            'document_type' => 'nullable|string|max:50',
+            'document' => 'nullable|string|max:255',
+            'birth_date' => 'nullable|date',
+        ]);
+        $student->update($data);
+        return redirect()->route('students.show', $student);
+    })->name('students.update');
+
+    Route::delete('students/{student}', function (\App\Models\Student $student) {
+        $student->delete();
+        return redirect()->route('students.index');
+    })->name('students.destroy');
+
+    Route::get('teachers/{teacher}/edit', function (\App\Models\Teacher $teacher) {
+        return Inertia::render('teachers/edit', [
+            'item' => $teacher,
+        ]);
+    })->name('teachers.edit');
+
+    Route::put('teachers/{teacher}', function (\Illuminate\Http\Request $request, \App\Models\Teacher $teacher) {
+        $data = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'last_name' => 'sometimes|required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'gender' => 'nullable|string|max:50',
+            'document_type' => 'nullable|string|max:50',
+            'document' => 'nullable|string|max:255',
+            'birth_date' => 'nullable|date',
+        ]);
+        $teacher->update($data);
+        return redirect()->route('teachers.show', $teacher);
+    })->name('teachers.update');
+
+    Route::delete('teachers/{teacher}', function (\App\Models\Teacher $teacher) {
+        $teacher->delete();
+        return redirect()->route('teachers.index');
+    })->name('teachers.destroy');
+
+    Route::get('subjects/{subject}/edit', function (\App\Models\Subject $subject) {
+        $teachers = \App\Models\Teacher::query()
+            ->select(['id','name','last_name'])
+            ->orderBy('name')
+            ->get();
+        $subject->load(['teacher:id,name,last_name']);
+        return Inertia::render('subjects/edit', [
+            'item' => $subject,
+            'teachers' => $teachers,
+        ]);
+    })->name('subjects.edit');
+
+    Route::put('subjects/{subject}', function (\Illuminate\Http\Request $request, \App\Models\Subject $subject) {
+        $data = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'code' => 'sometimes|required|string|max:255',
+            'credits' => 'sometimes|required|integer|min:0',
+            'teacher_id' => 'sometimes|nullable|exists:teachers,id',
+        ]);
+        $subject->fill(collect($data)->only(['name','code','credits'])->all());
+        if (array_key_exists('teacher_id', $data)) {
+            $subject->teacher()->associate($data['teacher_id']);
+        }
+        $subject->save();
+        return redirect()->route('subjects.show', $subject);
+    })->name('subjects.update');
+
+    Route::delete('subjects/{subject}', function (\App\Models\Subject $subject) {
+        $subject->delete();
+        return redirect()->route('subjects.index');
+    })->name('subjects.destroy');
+
     // Show pages
     Route::get('students/{student}', function (\App\Models\Student $student) {
         return Inertia::render('students/show', [

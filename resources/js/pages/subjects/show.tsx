@@ -41,9 +41,14 @@ export default function SubjectShow({ item }: Props) {
             title={`Subject #${String(it.id ?? '')}`}
             description="Detalles de la asignatura"
           />
-          <Button asChild variant="outline" size="sm">
-            <Link href="/subjects">Volver</Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild size="sm">
+              <Link href={`/subjects/${it.id}/edit`}>Edit</Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/subjects">Volver</Link>
+            </Button>
+          </div>
         </div>
 
         {/* Two sections side by side */}

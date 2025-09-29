@@ -37,9 +37,14 @@ export default function StudentShow({ item }: Props) {
       <div className="px-4 py-6 space-y-6">
         <div className="flex items-center justify-between">
           <Heading title={`Student #${it.id ?? ''}`} description="Detalles del estudiante" />
-          <Button asChild variant="outline" size="sm">
-            <Link href="/students">Volver</Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild size="sm">
+              <Link href={`/students/${it.id}/edit`}>Edit</Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/students">Volver</Link>
+            </Button>
+          </div>
         </div>
 
         {/* Basic Details */}
