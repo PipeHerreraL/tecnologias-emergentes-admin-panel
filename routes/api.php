@@ -15,8 +15,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/me', [AuthController::class, 'me']);
 
-        Route::apiResource('students', StudentController::class);
-        Route::apiResource('teachers', TeacherController::class);
-        Route::apiResource('subjects', SubjectController::class);
+        Route::apiResource('students', StudentController::class)->names('api.students');
+        Route::apiResource('teachers', TeacherController::class)->names('api.teachers');
+        Route::apiResource('subjects', SubjectController::class)->names('api.subjects');
     });
 });
