@@ -75,13 +75,15 @@ Ejecute las migraciones:
 php artisan migrate
 ```
 
-Para este caso, no es necesario ejecutar `php artisan db:seed`. para obtener datos de ejemplo y un usuario de prueba.
+Para obtener datos de ejemplo y un usuario de prueba.
 
 ```bash
 php artisan db:seed
 ```
 
 El usuario de prueba es: `admin@example.com` / `password`.
+
+En caso de no usar `db:seed`, cree un usuario manualmente con la ruta `/register`
 
 La app usa `SESSION_DRIVER=database` y `QUEUE_CONNECTION=database`, lo cual crea tablas mediante migraciones incluidas. Si cambió el driver, ajuste según su preferencia.
 
@@ -128,53 +130,56 @@ Esto construye los bundles SSR (`npm run build:ssr`) y luego inicia:
 ## 5) Acceso y rutas principales
 
 - Página de bienvenida: `/`
-- Autenticación:
-  - Login: `/login`
-  - Registro: `/register`
-- Dashboard (requiere auth + email verificado): `/dashboard`
+  - Autenticación:
+  - React:
+      - Login: `/login`
+      - Registro: `/register`
+  - Filament (admin PHP):
+      - Login: `/admin/login`
+  
+  La autenticación por ambas rutas funciona para cualquier módulo
 
 ### Módulo React (requiere auth + verified)
 
+- Dashboard: `/dashboard`
 - Students: `/students`
 - Teachers: `/teachers`
 - Subjects: `/subjects`
 
-Estas vistas de React aún no estan completas.
+### Módulo Filament (admin PHP requiere auth + verified)
 
-### Endpoints JSON bajo rutas de admin (lectura)
+- Dashboard: `/admin`
+- Students: `/admin/students`
+- Teachers: `/admin/teachers`
+- Subjects: `/admin/subjects`
 
-Para espejar lo que lista Filament con rutas similares, existen endpoints JSON de solo lectura:
+### API autenticada con Bearer Token (CRUD)
 
-- `GET /admin/students.json`
-- `GET /admin/teachers.json`
-- `GET /admin/subjects.json`
+Prefijo `/api/v1` (requiere Bearer Token en header `Authorization`). No requiere CSRF.
 
-Parámetros soportados: `search`, `page`, `per_page`.
-
-### API autenticada por sesión (CRUD)
-
-Prefijo `/api` (dentro de middleware `auth` + `verified`). Incluye cabeceras CSRF para escritura.
+- Auth (Obtención del bearer token) el body debe incluir `email` y `password`:
+  - `POST /api/v1/login`
+  - `POST /api/v1/logout`
+  - `GET /api/v1/me`
 
 - Students
-  - `GET /api/students`
-  - `POST /api/students`
-  - `GET /api/students/{id}`
-  - `PATCH /api/students/{id}`
-  - `DELETE /api/students/{id}`
+  - `GET /api/v1/students`
+  - `POST /api/v1/students`
+  - `GET /api/v1students/{id}`
+  - `PUT|PATCH /api/v1/students/{id}`
+  - `DELETE /api/v1/students/{id}`
 - Teachers
-  - `GET /api/teachers`
-  - `POST /api/teachers`
-  - `GET /api/teachers/{id}`
-  - `PATCH /api/teachers/{id}`
-  - `DELETE /api/teachers/{id}`
+    - `GET /api/v1/teachers`
+    - `POST /api/v1/teachers`
+    - `GET /api/v1/teachers/{id}`
+    - `PATCH /api/v1/teachers/{id}`
+    - `DELETE /api/v1/teachers/{id}`
 - Subjects
-  - `GET /api/subjects`
-  - `POST /api/subjects`
-  - `GET /api/subjects/{id}`
-  - `PATCH /api/subjects/{id}`
-  - `DELETE /api/subjects/{id}`
-
-Los listados aceptan `search`, `page`, `per_page`. Los POST/PATCH requieren cabecera `X-CSRF-TOKEN`. En el frontend ya se envía `credentials: 'same-origin'` para incluir la cookie de sesión.
+    - `GET /api/v1/subjects`
+    - `POST /api/v1/subjects`
+    - `GET /api/v1/subjects/{id}`
+    - `PATCH /api/v1/subjects/{id}`
+    - `DELETE /api/v1/subjects/{id}`
 
 ## 6) Construir para producción
 
@@ -204,7 +209,7 @@ Sirva la app con su servidor web (Nginx/Apache) apuntando a `public/`. Configure
 
 - “No veo datos en las tablas”: verifique `.env` (DB_*), existencia de datos, y ejecute `php artisan config:clear` tras cambios.
 - Error de conexión a BD: confirme host/puerto/credenciales y que la BD `tecnologias-emergentes` existe.
-- 419/CSRF al hacer POST/PATCH/DELETE: asegúrese de enviar `X-CSRF-TOKEN` y `credentials: 'same-origin'` desde el frontend.
+- 401 Unauthorized en API: verifique que incluye el Bearer Token correcto en el header `Authorization`.
 - Vite no recompila: reinicie `npm run dev`. Si usa HTTPS local, configure Vite acorde.
 - Email verificación: muchas rutas requieren `verified`. Verifique usuario o desactive temporalmente para pruebas (no recomendado en producción).
 
