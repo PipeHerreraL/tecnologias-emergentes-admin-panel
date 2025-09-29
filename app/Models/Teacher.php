@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * @method static create(array $data)
+ *
  * @property mixed $id
  */
 class Teacher extends Person
