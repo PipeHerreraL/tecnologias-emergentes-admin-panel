@@ -35,6 +35,7 @@ export default function SubjectsIndex({ items }: Props) {
         description="Browse and search subjects"
         items={items}
         columns={columns}
+        getRowHref={(row) => `/subjects/${row.id}`}
       />
     </AppSidebarLayout>
   );

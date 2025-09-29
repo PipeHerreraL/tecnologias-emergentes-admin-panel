@@ -22,9 +22,10 @@ type Props<T> = {
   description?: string;
   items: Paginator<T>;
   columns: Column<T>[];
+  getRowHref?: (row: T) => string | undefined;
 };
 
-export default function SimpleTable<T extends Record<string, unknown>>({ title, description, items, columns }: Props<T>) {
+export default function SimpleTable<T extends Record<string, unknown>>({ title, description, items, columns, getRowHref }: Props<T>) {
   const page = usePage();
   const url = (page.url || '').split('?')[0] || '';
   const initialQ = useMemo(() => new URLSearchParams((page.url.split('?')[1] ?? '')).get('q') ?? '', [page.url]);
@@ -88,13 +89,28 @@ export default function SimpleTable<T extends Record<string, unknown>>({ title, 
             {items.data.length === 0 && (
               <tr><td className="px-3 py-6 text-center text-muted-foreground" colSpan={columns.length}>No data.</td></tr>
             )}
-            {items.data.map((row, ri) => (
-              <tr key={ri} className="border-t">
-                {columns.map((c, ci) => (
-                  <td key={ci} className={`px-3 py-2 ${c.className ?? ''}`}>{String(c.accessor(row) ?? '')}</td>
-                ))}
-              </tr>
-            ))}
+            {items.data.map((row, ri) => {
+              const href = getRowHref?.(row as T);
+              const clickable = Boolean(href);
+              return (
+                <tr
+                  key={ri}
+                  className={`border-t ${clickable ? 'cursor-pointer hover:bg-muted/40' : ''}`}
+                  onClick={() => href && router.visit(href)}
+                  tabIndex={clickable ? 0 : -1}
+                  onKeyDown={(e) => {
+                    if (clickable && (e.key === 'Enter' || e.key === ' ')) {
+                      e.preventDefault();
+                      router.visit(href!);
+                    }
+                  }}
+                >
+                  {columns.map((c, ci) => (
+                    <td key={ci} className={`px-3 py-2 ${c.className ?? ''}`}>{String(c.accessor(row) ?? '')}</td>
+                  ))}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

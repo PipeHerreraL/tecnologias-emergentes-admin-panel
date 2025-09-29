@@ -65,6 +65,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'items' => $subjects,
         ]);
     })->name('subjects.index');
+
+    // Show pages
+    Route::get('students/{student}', function (\App\Models\Student $student) {
+        return Inertia::render('students/show', [
+            'item' => $student,
+        ]);
+    })->name('students.show');
+
+    Route::get('teachers/{teacher}', function (\App\Models\Teacher $teacher) {
+        return Inertia::render('teachers/show', [
+            'item' => $teacher,
+        ]);
+    })->name('teachers.show');
+
+    Route::get('subjects/{subject}', function (\App\Models\Subject $subject) {
+        return Inertia::render('subjects/show', [
+            'item' => $subject,
+        ]);
+    })->name('subjects.show');
 });
 
 require __DIR__.'/settings.php';

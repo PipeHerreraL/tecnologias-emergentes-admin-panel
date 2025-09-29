@@ -3,7 +3,8 @@ import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { PageProps } from '@/types';
 
 export type Student = {
-  document: number;
+  id: number;
+  document?: number | string | null;
   name: string;
   last_name: string;
   email?: string | null;
@@ -38,6 +39,7 @@ export default function StudentsIndex({ items }: Props) {
         description="Browse and search students"
         items={items}
         columns={columns}
+        getRowHref={(row) => `/students/${row.id}`}
       />
     </AppSidebarLayout>
   );
