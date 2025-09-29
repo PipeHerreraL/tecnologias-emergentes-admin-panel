@@ -80,6 +80,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('teachers.show');
 
     Route::get('subjects/{subject}', function (\App\Models\Subject $subject) {
+        $subject->load(['teacher:id,name,last_name']);
+
         return Inertia::render('subjects/show', [
             'item' => $subject,
         ]);
