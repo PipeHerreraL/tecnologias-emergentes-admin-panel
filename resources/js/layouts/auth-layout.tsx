@@ -1,4 +1,5 @@
 import AuthLayoutTemplate from '@/layouts/auth/auth-simple-layout';
+import React from 'react';
 
 export default function AuthLayout({
     children,

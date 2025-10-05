@@ -20,7 +20,7 @@ class SubjectController extends Controller
                 $query->where('name', 'like', "%$q%")
                     ->orWhere('code', 'like', "%$q%");
             })
-            ->orderByDesc('id')
+            ->orderBy('id')
             ->paginate($perPage)
             ->appends($request->query());
 

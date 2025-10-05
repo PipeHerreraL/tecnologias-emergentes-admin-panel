@@ -20,7 +20,7 @@ class StudentController extends Controller
                     ->orWhere('last_name', 'like', "%$q%")
                     ->orWhere('email', 'like', "%$q%");
             })
-            ->orderByDesc('id')
+            ->orderBy('id')
             ->paginate($perPage)
             ->appends($request->query());
 

@@ -46,7 +46,7 @@ export default function TwoFactorRecoveryCodes({
 
     useEffect(() => {
         if (!recoveryCodesList.length) {
-            fetchRecoveryCodes();
+            fetchRecoveryCodes().then();
         }
     }, [recoveryCodesList.length, fetchRecoveryCodes]);
 
