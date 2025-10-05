@@ -1,8 +1,10 @@
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
-import { Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import React from 'react';
+import type { BreadcrumbItem } from '@/types';
+import { edit } from '@/routes/teachers';
 
 type Item = {
     id: number;
@@ -56,12 +58,20 @@ export default function TeacherEdit({ item }: { item: Item }) {
         }
     };
 
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: `Teacher ${item.name ?? ''} ${item.last_name ?? ''}`,
+            href: item.id ? edit.url({ teacher: item.id }) : '',
+        },
+    ];
+
     return (
-        <AppSidebarLayout>
+        <AppSidebarLayout breadcrumbs={breadcrumbs}>
+            <Head title="Teachers" />
             <div className="space-y-6 px-4 py-6">
                 <div className="flex items-center justify-between">
                     <Heading
-                        title={`Edit Teacher #${item.id}`}
+                        title={`Edit Teacher`}
                         description="Update teacher information"
                     />
                     <div className="flex items-center gap-2">

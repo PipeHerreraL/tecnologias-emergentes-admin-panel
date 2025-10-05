@@ -1,13 +1,21 @@
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
-import { Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import React from 'react';
+import type { BreadcrumbItem } from '@/types';
+import { create } from '@/routes/subjects';
 
 type Teacher = { id: number; name: string | null; last_name: string | null };
 
 type Props = { teachers: Teacher[] };
 
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: `Create Subject`,
+        href: create().url,
+    },
+];
 export default function SubjectCreate({ teachers }: Props) {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
@@ -22,7 +30,8 @@ export default function SubjectCreate({ teachers }: Props) {
     };
 
     return (
-        <AppSidebarLayout>
+        <AppSidebarLayout breadcrumbs={breadcrumbs}>
+            <Head title="Subjects" />
             <div className="space-y-6 px-4 py-6">
                 <div className="flex items-center justify-between">
                     <Heading

@@ -1,8 +1,10 @@
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
-import { Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import React from 'react';
+import type { BreadcrumbItem } from '@/types';
+import { edit } from '@/routes/subjects';
 
 type Teacher = { id: number; name: string | null; last_name: string | null };
 
@@ -50,12 +52,20 @@ export default function SubjectEdit({ item, teachers }: Props) {
         }
     };
 
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: `Subject ${item.name ?? ''} (${item.code ?? ''})`,
+            href: item.id ? edit.url({ subject: item.id }) : '',
+        },
+    ];
+
     return (
-        <AppSidebarLayout>
+        <AppSidebarLayout breadcrumbs={breadcrumbs}>
+            <Head title="Subjects" />
             <div className="space-y-6 px-4 py-6">
                 <div className="flex items-center justify-between">
                     <Heading
-                        title={`Edit Subject #${item.id}`}
+                        title={`Edit Subject`}
                         description="Update subject"
                     />
                     <div className="flex items-center gap-2">

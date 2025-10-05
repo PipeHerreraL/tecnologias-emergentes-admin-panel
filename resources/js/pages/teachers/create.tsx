@@ -1,8 +1,17 @@
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
-import { Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import React from 'react';
+import type { BreadcrumbItem } from '@/types';
+import { create } from '@/routes/teachers';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: `Create Teacher`,
+        href: create().url,
+    },
+];
 
 export default function TeacherCreate() {
     const { data, setData, post, processing, errors } = useForm({
@@ -23,8 +32,9 @@ export default function TeacherCreate() {
     };
 
     return (
-        <AppSidebarLayout>
+        <AppSidebarLayout breadcrumbs={breadcrumbs}>
             <div className="space-y-6 px-4 py-6">
+                <Head title="Teachers" />
                 <div className="flex items-center justify-between">
                     <Heading
                         title="Create Teacher"

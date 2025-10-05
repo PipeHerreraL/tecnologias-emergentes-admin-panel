@@ -1,8 +1,17 @@
 import SimpleTable, { type Column } from '@/components/admin/simple-table';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
-import type { PageProps } from '@/types';
-import { router } from '@inertiajs/react';
+import type { BreadcrumbItem, PageProps } from '@/types';
+import { Head, router } from '@inertiajs/react';
 import { Pencil, Trash2 } from 'lucide-react';
+import { index } from '@/routes/teachers';
+import React from 'react';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Teachers',
+        href: index().url,
+    },
+];
 
 export type Teacher = {
     id: number;
@@ -74,7 +83,8 @@ export default function TeachersIndex({ items }: Props) {
     ];
 
     return (
-        <AppSidebarLayout>
+        <AppSidebarLayout breadcrumbs={breadcrumbs}>
+            <Head title="Teachers" />
             <SimpleTable<Teacher>
                 title="Teachers"
                 description="Browse and search teachers"

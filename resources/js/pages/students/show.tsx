@@ -1,9 +1,10 @@
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
-import type { PageProps } from '@/types';
-import { Link, useForm } from '@inertiajs/react';
+import type { BreadcrumbItem, PageProps } from '@/types';
+import { Head, Link, useForm } from '@inertiajs/react';
 import React from 'react';
+import { show } from '@/routes/students';
 
 function formatDateMDY(value: unknown): string {
     if (!value) return '-';
@@ -54,12 +55,20 @@ export default function StudentShow({ item, available_subjects = [] }: Props) {
         post(`/students/${it.id}/subjects/attach`);
     };
 
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: `Student ${it.name ?? ''} ${it.last_name ?? ''}`,
+            href: it.id ? show.url({ student: it.id }) : '',
+        },
+    ];
+
     return (
-        <AppSidebarLayout>
+        <AppSidebarLayout breadcrumbs={breadcrumbs}>
+            <Head title="Students" />
             <div className="space-y-6 px-4 py-6">
                 <div className="flex items-center justify-between">
                     <Heading
-                        title={`Student #${it.id ?? ''}`}
+                        title={`Student ${it.name ?? ''} ${it.last_name}`}
                         description="Detalles del estudiante"
                     />
                     <div className="flex items-center gap-2">

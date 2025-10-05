@@ -1,9 +1,10 @@
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
-import type { PageProps } from '@/types';
-import { Link, useForm } from '@inertiajs/react';
+import type { BreadcrumbItem, PageProps } from '@/types';
+import { Head, Link, useForm } from '@inertiajs/react';
 import React from 'react';
+import { show } from '@/routes/subjects';
 
 function Field({ label, value }: { label: string; value: unknown }) {
     const v =
@@ -58,12 +59,20 @@ export default function SubjectShow({ item, available_students = [] }: Props) {
         post(`/subjects/${it.id}/students/attach`);
     };
 
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: `Subject ${it.name ?? ''} (${it.code ?? ''})`,
+            href: it.id ? show.url({ subject: it.id }) : '',
+        },
+    ];
+
     return (
-        <AppSidebarLayout>
+        <AppSidebarLayout breadcrumbs={breadcrumbs}>
+            <Head title="Subjects" />
             <div className="space-y-6 px-4 py-6">
                 <div className="flex items-center justify-between">
                     <Heading
-                        title={`Subject #${String(it.id ?? '')}`}
+                        title={`Subject ${it.name ?? ''} (${it.code ?? ''})`}
                         description="Detalles de la asignatura"
                     />
                     <div className="flex items-center gap-2">

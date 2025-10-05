@@ -1,8 +1,17 @@
 import SimpleTable, { type Column } from '@/components/admin/simple-table';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
-import type { PageProps } from '@/types';
-import { router } from '@inertiajs/react';
+import type { BreadcrumbItem, PageProps } from '@/types';
+import { Head, router } from '@inertiajs/react';
 import { Pencil, Trash2 } from 'lucide-react';
+import { index } from '@/routes/subjects';
+import React from 'react';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: `Subjects`,
+        href: index().url,
+    },
+];
 
 export type Subject = {
     id: number;
@@ -66,7 +75,8 @@ export default function SubjectsIndex({ items }: Props) {
     ];
 
     return (
-        <AppSidebarLayout>
+        <AppSidebarLayout breadcrumbs={breadcrumbs}>
+            <Head title="Subjects" />
             <SimpleTable<Subject>
                 title="Subjects"
                 description="Browse and search subjects"
